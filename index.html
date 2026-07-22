@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>화재 대피 AI 실제 센서 대시보드</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+</head>
+<body>
+<header><div><small>07단계</small><h1>화재 대피 AI 실제 센서 대시보드</h1><p>실제 센서값으로 미래 위험도와 안전 경로를 표시합니다.</p></div><div><b id="badge" class="badge no">NO DATA</b><span id="last">수신 기록 없음</span></div></header>
+<main>
+<section class="panel">
+<div class="setup">
+<label>Apps Script 웹 앱 주소<input id="api" placeholder="https://script.google.com/macros/s/.../exec"></label>
+<label>현재 위치<select id="start"></select></label>
+<label>표시 시점<select id="horizon"><option value="0">현재</option><option value="10">10초 뒤</option><option value="20">20초 뒤</option><option value="30">30초 뒤</option></select></label>
+<label>자동 새로고침<select id="refresh"><option value="0">사용 안 함</option><option value="3000">3초</option><option value="5000" selected>5초</option><option value="10000">10초</option></select></label>
+</div>
+<div class="buttons"><button id="save">설정 저장</button><button id="fetch" class="primary">지금 데이터 받기</button><button id="test">시험 데이터 실행</button><button id="stop">시험 모드 중지</button></div>
+<p id="msg">Apps Script 주소를 입력하거나 시험 데이터 모드를 실행하세요.</p>
+</section>
+
+<section class="summary">
+<article><span>장치</span><strong id="device">-</strong><small id="rssi">RSSI: -</small></article>
+<article><span>표시 시점</span><strong id="shown">현재</strong><small>선택한 시점의 위험도</small></article>
+<article><span>추천 출구</span><strong id="exit">-</strong><small id="route">경로 계산 전</small></article>
+<article><span>AI 모델</span><strong id="model">확인 중</strong><small id="modelDetail">모델 파일 확인 중</small></article>
+</section>
+
+<section class="layout">
+<aside class="panel">
+<h2>실제 대표 센서 R1~R6</h2><p>ESP32에서 직접 받은 위험도입니다.</p>
+<div id="realCards" class="realgrid"></div>
+<h2>데이터 상태</h2>
+<dl><div><dt>서버 시각</dt><dd id="serverTime">-</dd></div><div><dt>데이터 나이</dt><dd id="age">-</dd></div><div><dt>순번</dt><dd id="seq">-</dd></div><div><dt>모드</dt><dd id="mode">실제 데이터</dd></div></dl>
+</aside>
+
+<section class="panel">
+<div class="maphead"><div><h2>1층 위험도와 대피 경로</h2><p><b id="mapHorizon">현재</b> 위험도</p></div><div class="legend"><span>● 안전</span><span>● 주의</span><span>● 위험</span><span>● 매우 위험</span></div></div>
+<div class="map"><img src="assets/floor-plan.jpg"><svg id="pathLayer" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><div id="sensorLayer"></div><div id="exitLayer"></div></div>
+</section>
+</section>
+
+<section class="panel">
+<div class="titleRow"><div><h2>S01~S30 위험도</h2><p>현재값은 R1~R6에서 보간하고 미래값은 TensorFlow.js로 예측합니다.</p></div><button id="download">현재 화면 CSV 저장</button></div>
+<div id="virtualCards" class="virtualgrid"></div>
+</section>
+
+<section class="panel"><h2>시간대별 추천 경로</h2><div id="routes" class="routes"></div></section>
+</main>
+<footer>교육용 프로토타입이며 실제 화재 대피 판단에 사용할 수 없습니다.</footer>
+<script src="js/simulation-data.js"></script><script src="js/pathfinding.js"></script><script src="js/config.js"></script><script src="js/app.js"></script>
+</body></html>
